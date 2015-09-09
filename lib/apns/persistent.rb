@@ -1,4 +1,5 @@
 require "apns/persistent/client"
+require "apns/persistent/feedback_client"
 require "apns/persistent/connection"
 require "apns/persistent/version"
 
