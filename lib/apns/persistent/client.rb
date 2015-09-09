@@ -8,8 +8,8 @@ module Apns
       def_delegators :@connection, :open, :close, :opened?, :closed?
 
       def initialize(certificate: , passphrase: nil, sandbox: true)
-        certificate = File.read(certificate)
-        @connection = Connection.new(Client.gateway_uri(sandbox), certificate, passphrase)
+        cer = File.read(certificate)
+        @connection = Connection.new(Client.gateway_uri(sandbox), cer, passphrase)
       end
 
       def self.push_once(certificate: ,
@@ -129,14 +129,6 @@ module Apns
           [5, 1, priority].pack('cnc') unless priority.nil?
         end
       end
-
-      def pack_notification(token: , alert: nil, badge: nil, sound: nil, category: nil, content_available: true, custom_payload: nil)
-        t = [1, 32, token.gsub(/[<\s>]/, '')].pack('cnH64')
-        data = [t, ]
-      end
-
-      
-
     end
   end
 end
