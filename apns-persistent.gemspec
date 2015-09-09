@@ -6,8 +6,8 @@ require 'apns/persistent/version'
 Gem::Specification.new do |spec|
   spec.name          = "apns-persistent"
   spec.version       = Apns::Persistent::VERSION
-  spec.authors       = ["Koji Murata"]
-  spec.email         = ["koji.murata@dena.com"]
+  spec.authors       = ["malt03"]
+  spec.email         = ["malt.koji@gmail.com"]
 
   spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
   spec.description   = %q{TODO: Write a longer description or delete this line.}
