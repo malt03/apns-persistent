@@ -7,7 +7,7 @@ module Apns
       extend Forwardable
       def_delegators :@connection, :open, :close, :opened?, :closed?
 
-      def initialize(certificate: , passphrase: nil, sandbox: true)
+      def initialize(certificate: , passphrase: nil, sandbox: false)
         cer = File.read(certificate)
         @connection = Connection.new(self.class.gateway_uri(sandbox), cer, passphrase)
       end
