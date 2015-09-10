@@ -18,8 +18,6 @@ module Apns
         unregistered_devices.collect{ |device| device[:token] }
       end
 
-      private
-
       def self.gateway_uri(sandbox)
         sandbox ? "apn://feedback.sandbox.push.apple.com:2196" : "apn://feedback.push.apple.com:2196"
       end

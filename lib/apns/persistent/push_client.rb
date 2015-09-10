@@ -75,11 +75,11 @@ module Apns
       end
 
       class << self
-        private
-
         def gateway_uri(sandbox)
           sandbox ? "apn://gateway.sandbox.push.apple.com:2195" : "apn://gateway.push.apple.com:2195"
         end
+
+        private
 
         def message(token, alert, badge, sound, category, content_available, custom_payload, id, expiry, priority)
           data = [token_data(token),
