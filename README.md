@@ -26,9 +26,7 @@ c.open
 
 thread = c.regist_error_handle do |command, status, id|
   #error handle
-  p command
-  p status
-  p id
+  puts "Send Error! command:#{command} status:#{status} id:#{id}"
 end
 
 c.push(token: '88189fcf 62a1b2eb b7cb1435 597e734e a90da4ce 6196a9b3 309a5421 4c6259e',
@@ -52,9 +50,7 @@ c.push(token: '88189fcf 62a1b2eb b7cb1435 597e734e a90da4ce 6196a9b3 309a5421 4c
        sound: 'default',
        id: 1) do |command, status, id|
   #error handle
-  p command
-  p status
-  p id
+  puts "Send Error! command:#{command} status:#{status} id:#{id}"
 end
 c.close
 ```
@@ -67,9 +63,7 @@ Apns::Persistent::PushClient.push_once(certificate: '/path/to/apple_push_notific
                                        sound: 'default',
                                        id: 1) do |command, status, id|
   #error handle
-  p command
-  p status
-  p id
+  puts "Send Error! command:#{command} status:#{status} id:#{id}"
 end
 ```
 
