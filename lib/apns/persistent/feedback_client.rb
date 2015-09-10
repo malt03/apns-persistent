@@ -1,16 +1,6 @@
-require 'forwardable'
-
 module Apns
   module Persistent
-    class FeedbackClient
-      extend Forwardable
-      def_delegators :@connection, :open, :close, :opened?, :closed?
-
-      def initialize(certificate: , passphrase: nil, sandbox: true)
-        cer = File.read(certificate)
-        @connection = Connection.new(FeedbackClient.gateway_uri(sandbox), cer, passphrase)
-      end
-
+    class FeedbackClient < Client
       def unregistered_devices
         raise 'please open' if closed?
 
