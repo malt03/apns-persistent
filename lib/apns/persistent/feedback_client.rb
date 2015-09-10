@@ -14,7 +14,7 @@ module Apns
         devices
       end
 
-      def unregistered_devices_token
+      def unregistered_device_tokens
         unregistered_devices.collect{ |device| device[:token] }
       end
 
