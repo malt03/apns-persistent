@@ -18,8 +18,8 @@ Or install it yourself as:
 
     $ gem install apns-persistent
 
-## Usage
-### Push
+## Push Usage
+### Recommended
 ```ruby
 c = Apns::Persistent::PushClient.new(certificate: '/path/to/apple_push_notification.pem', sandbox: true)
 c.open
@@ -43,6 +43,7 @@ rescue Interrupt
 end
 ```
 
+### Without Thread
 ```ruby
 c = Apns::Persistent::PushClient.new(certificate: '/path/to/apple_push_notification.pem', sandbox: true)
 c.open
@@ -58,6 +59,7 @@ end
 c.close
 ```
 
+### Without Persistent Connections
 ```ruby
 Apns::Persistent::PushClient.push_once(certificate: '/path/to/apple_push_notification.pem',
                                        token: '88189fcf 62a1b2eb b7cb1435 597e734e a90da4ce 6196a9b3 309a5421 4c6259e9',
@@ -71,7 +73,8 @@ Apns::Persistent::PushClient.push_once(certificate: '/path/to/apple_push_notific
 end
 ```
 
-### Feedback API
+## Feedback API Usage
+### Get unregistered devices
 ```ruby
 c = Apns::Persistent::FeedbackClient.new(certificate: '/path/to/apple_push_notification.pem', sandbox: true)
 c.open
@@ -79,6 +82,7 @@ devices = c.unregistered_devices
 c.close
 ```
 
+### Get unregistered device tokens
 ```ruby
 c = Apns::Persistent::FeedbackClient.new(certificate: '/path/to/apple_push_notification.pem', sandbox: true)
 c.open
@@ -86,12 +90,22 @@ device_tokens = c.unregistered_device_tokens
 c.close
 ```
 
+### Get unregistered devices once
 ```ruby
 devices = Apns::Persistent::FeedbackClient.unregistered_devices_once(certificate: '/path/to/apple_push_notification.pem', sandbox: true)
 ```
 
+### Get unregistered device tokens once
 ```ruby
 device_tokens = Apns::Persistent::FeedbackClient.unregistered_device_tokens_once(certificate: '/path/to/apple_push_notification.pem', sandbox: true)
+```
+
+## Command Line Tools
+```console
+$ push_daemon --pemfile <path> [--sandbox]
+```
+```console
+$ push --token <token> --alert "Hello" --badge 2 --sound "default"
 ```
 
 ## Contributing
