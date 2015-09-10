@@ -1,6 +1,18 @@
 module Apns
   module Persistent
     class FeedbackClient < Client
+      def self.unregistered_devices_once(certificate: , sandbox: true)
+        client = Apns::Persistent::FeedbackClient.new(certificate: certificate, sandbox: sandbox)
+        client.open
+        devices = client.unregistered_devices
+        client.close
+        devices
+      end
+
+      def self.unregistered_device_tokens_once(certificate: , sandbox: true)
+        FeedbackClient.unregistered_devices_once(certificate: certificate, sandbox: sandbox).collect { |device| device[:token] }
+      end
+
       def unregistered_devices
         raise 'please open' if closed?
 
@@ -15,7 +27,7 @@ module Apns
       end
 
       def unregistered_device_tokens
-        unregistered_devices.collect{ |device| device[:token] }
+        unregistered_devices.collect { |device| device[:token] }
       end
 
       def self.gateway_uri(sandbox)
