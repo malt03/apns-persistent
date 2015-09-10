@@ -4,36 +4,28 @@ require 'json'
 module Apns
   module Persistent
     class FeedbackClient
-      # def unregistered_devices
-      #   devices = []
+      def initialize(certificate: , passphrase: nil, sandbox: true)
+        cer = File.read(certificate)
+        @connection = Connection.new(FeedbackClient.gateway_uri(sandbox), cer, passphrase)
+      end
 
-      #   Connection.open(@feedback_uri, @certificate, @passphrase) do |connection|
-      #     while line = connection.read(38)
-      #       feedback = line.unpack('N1n1H140')
-      #       timestamp = feedback[0]
-      #       token = feedback[2].scan(/.{0,8}/).join(' ').strip
-      #       devices << {token: token, timestamp: timestamp} if token && timestamp
-      #     end
-      #   end
-
-      #   devices.collect{|device| device[:token]}
-      # end
-
-      def self.unregistered_devices(certificate: , passphrase: nil, sandbox: true)
+      def unregistered_devices
         devices = []
 
-        cer = File.read(certificate)
-        connection = Connection.new(FeedbackClient.gateway_uri(sandbox), cer, passphrase)
-        connection.open
-        while line = connection.read(38)
+        @connection.open
+        while line = @connection.read(38)
           feedback = line.unpack('N1n1H140')
           timestamp = feedback[0]
           token = feedback[2].scan(/.{0,8}/).join(' ').strip
           devices << {token: token, timestamp: timestamp} if token && timestamp
         end
-        connection.close
+        @connection.close
 
-        devices.collect{|device| device[:token]}
+        devices
+      end
+
+      def unregistered_devices_token
+        unregistered_devices.collect{|device| device[:token]}
       end
 
       private
