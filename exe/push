@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'yaml'
+require 'socket'
+require 'optparse'
+
+require 'apns/persistent'
+
+params = Hash[ARGV.getopts('',
+                           'host:',
+                           'port:',
+                           'token:',
+                           'alert:',
+                           'badge:',
+                           'sound:',
+                           'category:',
+                           'content_available',
+                           'payload_yaml:',
+                           'id:',
+                           'expiry:',
+                           'priority:').map { |k, v| [k.to_sym, v] }]
+
+params[:id] = params[:id].to_i if params[:id]
+params.delete(:payload_yaml).tap do |file|
+  params[:custom_payload] = YAML.load(File.read(file)) if file
+end
+
+sock = TCPSocket.open(params.delete(:host) || 'localhost', params.delete(:port) || 20000)
+yml = params.to_yaml
+sock.write([yml.length].pack('I'))
+sock.write(yml)
+puts sock.gets
+sock.close

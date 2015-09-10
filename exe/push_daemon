@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'yaml'
+require 'socket'
+require 'optparse'
+
+require 'apns/persistent'
+
+def ready(port)
+  puts "\e[32mReady! port=#{port}\e[0m"
+end
+
+params = Hash[ARGV.getopts('', 'file:', 'pass:', 'sandbox', 'port:').map { |k, v| [k.to_sym, v] }]
+port = params[:port] || 20000
+
+client = Apns::Persistent::PushClient.new(certificate: params[:file], passphrase: params[:pass], sandbox: params[:sandbox])
+client.open
+thread = client.regist_error_handle do |command, status, id|
+  puts "\e[31mSend Error! command:#{command} status:#{status} id:#{id}\e[0m"
+  ready(port)
+end
+
+gate = TCPServer.open port
+
+begin
+  loop do
+    ready(port)
+    sock = gate.accept
+
+    length = sock.read(4).unpack('I')[0]
+    data = YAML.load(sock.read(length))
+
+    client.push(data)
+    puts "Sent! id:#{data[:id] || 0}"
+    sock.write("OK\n")
+    sock.close
+  end
+rescue Interrupt
+  client.close
+  gate.close
+end
