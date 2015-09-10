@@ -18,7 +18,7 @@ module Apns
                          expiry: nil,
                          priority: nil)
 
-        client = Client.new(certificate: certificate, passphrase: passphrase, sandbox: sandbox)
+        client = PushClient.new(certificate: certificate, passphrase: passphrase, sandbox: sandbox)
         client.open
 
         client.push(token: token,
@@ -52,7 +52,7 @@ module Apns
         
         raise 'please open' if closed?
 
-        m = Client.message(token, alert, badge, sound, category, content_available, custom_payload, id, expiry, priority)
+        m = PushClient.message(token, alert, badge, sound, category, content_available, custom_payload, id, expiry, priority)
         @connection.write(m)
 
         if block_given? && @connection.readable?
@@ -79,8 +79,6 @@ module Apns
           sandbox ? "apn://gateway.sandbox.push.apple.com:2195" : "apn://gateway.push.apple.com:2195"
         end
 
-        private
-
         def message(token, alert, badge, sound, category, content_available, custom_payload, id, expiry, priority)
           data = [token_data(token),
                   payload_data(custom_payload, alert, badge, sound, category, content_available),
@@ -89,6 +87,8 @@ module Apns
                   priority_data(priority)].compact.join
           [2, data.bytes.count, data].pack('cNa*')
         end
+
+        private
 
         def token_data(token)
           [1, 32, token.gsub(/[<\s>]/, '')].pack('cnH64')
