@@ -110,6 +110,11 @@ $ push_daemon --pemfile <path> [--sandbox]
 $ push --token <token> --alert "Hello" --badge 2 --sound "default"
 ```
 
+### Push once
+```console
+$ push_once --pemfile <path> [--sandbox] --token <token> --alert "Hello" --sound "default" --badge 2
+```
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/malt03/apns-persistent. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
