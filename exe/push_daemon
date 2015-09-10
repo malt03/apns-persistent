@@ -11,10 +11,25 @@ def ready(port)
   puts "\e[32mReady! port=#{port}\e[0m"
 end
 
-params = Hash[ARGV.getopts('', 'file:', 'pass:', 'sandbox', 'port:').map { |k, v| [k.to_sym, v] }]
+params = Hash[ARGV.getopts('', 'help', 'port:', 'pemfile:', 'passphrase:', 'sandbox').map { |k, v| [k.to_sym, v] }]
+
+if params[:help]
+  puts 'Usage: push_daemon [--port port] --pemfile path [--passphrase string] [--sandbox]'
+  exit
+end
+
+unless params[:pemfile]
+  puts 'Missing filename (" --help" for help)'
+  exit
+end
+unless File.file?(params[:pemfile])
+  puts "#{params[:pemfile]}: No such file or directory"
+  exit
+end
+
 port = params[:port] || 20000
 
-client = Apns::Persistent::PushClient.new(certificate: params[:file], passphrase: params[:pass], sandbox: params[:sandbox])
+client = Apns::Persistent::PushClient.new(certificate: params[:pemfile], passphrase: params[:passphrase], sandbox: params[:sandbox])
 client.open
 thread = client.regist_error_handle do |command, status, id|
   puts "\e[31mSend Error! command:#{command} status:#{status} id:#{id}\e[0m"
