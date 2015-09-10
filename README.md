@@ -19,6 +19,8 @@ Or install it yourself as:
     $ gem install apns-persistent
 
 ## Push Usage
+[Examples](https://github.com/malt03/apns-persistent/tree/master/exe)
+
 ### Recommend
 ```ruby
 c = Apns::Persistent::PushClient.new(certificate: '/path/to/apple_push_notification.pem', sandbox: true)
