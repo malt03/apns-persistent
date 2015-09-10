@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'yaml'
+require 'optparse'
+
+require 'apns/persistent'
+
+params = Hash[ARGV.getopts('',
+                           'help',
+                           'pemfile:',
+                           'passphrase:',
+                           'sandbox',
+                           'token:',
+                           'alert:',
+                           'badge:',
+                           'sound:',
+                           'category:',
+                           'content_available',
+                           'payload_yaml:',
+                           'id:',
+                           'expiry:',
+                           'priority:').map { |k, v| [k.to_sym, v] }]
+
+if params.delete(:help)
+  puts 'Usage: push [--host host] [--port port] [--token string] [--alert string] [--badge num] [--sound string] [--category string] [--content_available] [--payload_yaml path] [--id num] [--expiry time] [--priority num]'
+  exit
+end
+
+unless params[:pemfile]
+  puts 'Missing filename (" --help" for help)'
+  exit
+end
+unless File.file?(params[:pemfile])
+  puts "#{params[:pemfile]}: No such file or directory"
+  exit
+end
+
+params[:certificate] = params.delete(:pemfile)
+params[:id] = params[:id].to_i if params[:id]
+params.delete(:payload_yaml).tap do |file|
+  params[:custom_payload] = YAML.load(File.read(file)) if file
+end
+
+Apns::Persistent::PushClient.push_once(params) do |command, status, id|
+  puts "\e[31mSend Error! command:#{command} status:#{status} id:#{id}\e[0m"
+end
