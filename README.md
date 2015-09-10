@@ -1,8 +1,6 @@
 # Apns::Persistent
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/apns/persistent`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+apns-persisitent is referencing [houston](https://rubygems.org/gems/houston/)
 
 ## Installation
 
@@ -21,18 +19,84 @@ Or install it yourself as:
     $ gem install apns-persistent
 
 ## Usage
+### Push
+```ruby
+c = Apns::Persistent::PushClient.new(certificate: '/path/to/apple_push_notification.pem', sandbox: true)
+c.open
 
-TODO: Write usage instructions here
+thread = c.regist_error_handle do |command, status, id|
+  #error handle
+  p command
+  p status
+  p id
+end
 
-## Development
+c.push(token: '88189fcf 62a1b2eb b7cb1435 597e734e a90da4ce 6196a9b3 309a5421 4c6259e',
+       alert: 'foobar',
+       sound: 'default',
+       id: 1)
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+begin
+  thread.join
+rescue Interrupt
+  c.close
+end
+```
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```ruby
+c = Apns::Persistent::PushClient.new(certificate: '/path/to/apple_push_notification.pem', sandbox: true)
+c.open
+c.push(token: '88189fcf 62a1b2eb b7cb1435 597e734e a90da4ce 6196a9b3 309a5421 4c6259e',
+       alert: 'foobar',
+       sound: 'default',
+       id: 1) do |command, status, id|
+  #error handle
+  p command
+  p status
+  p id
+end
+c.close
+```
+
+```ruby
+Apns::Persistent::PushClient.push_once(certificate: '/path/to/apple_push_notification.pem',
+                                       token: '88189fcf 62a1b2eb b7cb1435 597e734e a90da4ce 6196a9b3 309a5421 4c6259e9',
+                                       alert: 'foobar',
+                                       sound: 'default',
+                                       id: 1) do |command, status, id|
+  #error handle
+  p command
+  p status
+  p id
+end
+```
+
+### Feedback API
+```ruby
+c = Apns::Persistent::FeedbackClient.new(certificate: '/path/to/apple_push_notification.pem', sandbox: true)
+c.open
+devices = c.unregistered_devices
+c.close
+```
+
+```ruby
+c = Apns::Persistent::FeedbackClient.new(certificate: '/path/to/apple_push_notification.pem', sandbox: true)
+c.open
+device_tokens = c.unregistered_device_tokens
+c.close
+```
+
+```ruby
+devices = Apns::Persistent::FeedbackClient.unregistered_devices_once(certificate: '/path/to/apple_push_notification.pem', sandbox: true)
+```
+
+```ruby
+device_tokens = Apns::Persistent::FeedbackClient.unregistered_device_tokens_once(certificate: '/path/to/apple_push_notification.pem', sandbox: true)
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/apns-persistent. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/malt03/apns-persistent. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
 
 
 ## License

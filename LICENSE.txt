@@ -1,6 +1,7 @@
 The MIT License (MIT)
 
-Copyright (c) 2015 Koji Murata
+Copyright (c) 2015 Koji Murata (https://github.com/malt03)
+Copyright (c) 2012–2015 Mattt Thompson (http://mattt.me/)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
