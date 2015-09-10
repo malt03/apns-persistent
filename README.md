@@ -19,7 +19,7 @@ Or install it yourself as:
     $ gem install apns-persistent
 
 ## Push Usage
-### Recommended
+### Recommend
 ```ruby
 c = Apns::Persistent::PushClient.new(certificate: '/path/to/apple_push_notification.pem', sandbox: true)
 c.open
@@ -101,9 +101,11 @@ device_tokens = Apns::Persistent::FeedbackClient.unregistered_device_tokens_once
 ```
 
 ## Command Line Tools
+### Launch Daemon
 ```console
 $ push_daemon --pemfile <path> [--sandbox]
 ```
+### Push after launch daemon
 ```console
 $ push --token <token> --alert "Hello" --badge 2 --sound "default"
 ```
