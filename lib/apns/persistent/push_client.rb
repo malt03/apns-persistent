@@ -64,7 +64,7 @@ module Apns
         end
       end
 
-      def regist_error_handle
+      def register_error_handle
         Thread.new do
           while error = @connection.read(6)
             command, status, id = error.unpack('ccN')

@@ -31,7 +31,7 @@ port = params[:port] || 20000
 
 client = Apns::Persistent::PushClient.new(certificate: params[:pemfile], passphrase: params[:passphrase], sandbox: params[:sandbox])
 client.open
-thread = client.regist_error_handle do |command, status, id|
+thread = client.register_error_handle do |command, status, id|
   puts "\e[31mSend Error! command:#{command} status:#{status} id:#{id}\e[0m"
   ready(port)
 end
