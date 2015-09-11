@@ -26,7 +26,7 @@ Or install it yourself as:
 c = Apns::Persistent::PushClient.new(certificate: '/path/to/apple_push_notification.pem', sandbox: true)
 c.open
 
-thread = c.regist_error_handle do |command, status, id|
+thread = c.register_error_handle do |command, status, id|
   #error handle
   puts "Send Error! command:#{command} status:#{status} id:#{id}"
 end
