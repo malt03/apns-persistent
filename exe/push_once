@@ -23,7 +23,7 @@ params = Hash[ARGV.getopts('',
                            'priority:').map { |k, v| [k.to_sym, v] }]
 
 if params.delete(:help)
-  puts 'Usage: push [--host host] [--port port] [--token string] [--alert string] [--badge num] [--sound string] [--category string] [--content_available] [--payload_yaml path] [--id num] [--expiry time] [--priority num]'
+  puts 'Usage: push_once [--pemfile path] [--passphrase string] [--sandbox] [--token string] [--alert string] [--badge num] [--sound string] [--category string] [--content_available] [--payload_yaml path] [--id num] [--expiry time] [--priority num]'
   exit
 end
 
