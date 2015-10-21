@@ -28,6 +28,7 @@ if params.delete(:help)
 end
 
 params[:id] = params[:id].to_i if params[:id]
+params[:priority] = params[:priority].to_i if params[:priority]
 params.delete(:payload_yaml).tap do |file|
   params[:custom_payload] = YAML.load(File.read(file)) if file
 end
