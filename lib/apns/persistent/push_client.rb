@@ -6,13 +6,13 @@ module Apns
       def self.push_once(certificate: ,
                          passphrase: nil,
                          sandbox: true,
-
                          token: ,
                          alert: nil,
                          badge: nil,
                          sound: nil,
                          category: nil,
                          content_available: true,
+                         mutable_content: false,
                          custom_payload: nil,
                          id: nil,
                          expiry: nil,
@@ -27,6 +27,7 @@ module Apns
                     sound: sound,
                     category: category,
                     content_available: content_available,
+                    mutable_content: mutable_content,
                     custom_payload: custom_payload,
                     id: id,
                     expiry: expiry,
@@ -45,6 +46,7 @@ module Apns
                sound: nil,
                category: nil,
                content_available: true,
+               mutable_content: false,
                custom_payload: nil,
                id: nil,
                expiry: nil,
@@ -52,7 +54,7 @@ module Apns
         
         raise 'please open' if closed?
 
-        m = PushClient.message(token, alert, badge, sound, category, content_available, custom_payload, id, expiry, priority)
+        m = PushClient.message(token, alert, badge, sound, category, content_available, mutable_content, custom_payload, id, expiry, priority)
         @connection.write(m)
 
         if block_given? && @connection.readable?
@@ -79,9 +81,9 @@ module Apns
           sandbox ? "apn://gateway.sandbox.push.apple.com:2195" : "apn://gateway.push.apple.com:2195"
         end
 
-        def message(token, alert, badge, sound, category, content_available, custom_payload, id, expiry, priority)
+        def message(token, alert, badge, sound, category, content_available, mutable_content, custom_payload, id, expiry, priority)
           data = [token_data(token),
-                  payload_data(custom_payload, alert, badge, sound, category, content_available),
+                  payload_data(custom_payload, alert, badge, sound, category, content_available, mutable_content),
                   id_data(id),
                   expiration_data(expiry),
                   priority_data(priority)].compact.join
@@ -94,7 +96,7 @@ module Apns
           [1, 32, token.gsub(/[<\s>]/, '')].pack('cnH64')
         end
 
-        def payload_data(custom_payload, alert, badge, sound, category, content_available)
+        def payload_data(custom_payload, alert, badge, sound, category, content_available, mutable_content)
           payload = {}.merge(custom_payload || {}).inject({}){|h,(k,v)| h[k.to_s] = v; h}
 
           payload['aps'] ||= {}
@@ -103,6 +105,7 @@ module Apns
           payload['aps']['sound'] = sound if sound
           payload['aps']['category'] = category if category
           payload['aps']['content-available'] = 1 if content_available
+          payload['aps']['mutable-content'] = 1 if mutable_content
           
           json = payload.to_json
           [2, json.bytes.count, json].pack('cna*')
